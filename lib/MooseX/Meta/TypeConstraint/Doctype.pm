@@ -62,18 +62,18 @@ has '+constraint' => (
     lazy    => 1,
     default => sub {
         weaken(my $self = shift);
-        return sub { !$self->validate_doctype($_) };
+        return sub { !$self->_validate_doctype($_) };
     },
 );
 
 has '+message' => (
     default => sub {
         weaken(my $self = shift);
-        return sub { $self->validate_doctype($_) };
+        return sub { $self->_validate_doctype($_) };
     },
 );
 
-sub validate_doctype {
+sub _validate_doctype {
     my $self = shift;
     my ($data, $doctype, $prefix) = @_;
 
@@ -91,7 +91,7 @@ sub validate_doctype {
             }
             else {
                 for my $key (keys %$doctype) {
-                    my $sub_errors = $self->validate_doctype(
+                    my $sub_errors = $self->_validate_doctype(
                         $data->{$key},
                         $doctype->{$key},
                         join('.', (length($prefix) ? $prefix : ()), $key)
@@ -121,7 +121,7 @@ sub validate_doctype {
             }
             else {
                 for my $i (0..$#$doctype) {
-                    my $sub_errors = $self->validate_doctype(
+                    my $sub_errors = $self->_validate_doctype(
                         $data->[$i],
                         $doctype->[$i],
                         join('.', (length($prefix) ? $prefix : ()), "[$i]")
