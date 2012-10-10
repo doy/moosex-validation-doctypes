@@ -1,5 +1,6 @@
 package MooseX::Meta::TypeConstraint::Doctype;
 use Moose;
+# ABSTRACT: Moose type constraint for validating doctypes
 
 use Devel::PartialDump 'dump';
 use Moose::Util::TypeConstraints qw(class_type find_type_constraint
@@ -8,9 +9,44 @@ use Scalar::Util 'weaken';
 
 use MooseX::Validation::Doctypes::Errors;
 
+=head1 SYNOPSIS
+
+  use MooseX::Validation::Doctypes;
+
+  doctype 'Person' => {
+      id    => 'Str',
+      name  => 'Str',
+      title => 'Str',
+  };
+
+  use JSON;
+
+  my $data = decode_json('{"id": "1234-A", "name": "Bob", "title": "CIO"}');
+
+  use Moose::Util::TypeConstraints;
+
+  my $person = find_type_constraint('Person');
+  die "Data is invalid" unless $person->check($data);
+
+=head1 DESCRIPTION
+
+This module implements the actual type constraint that is created by the
+C<doctype> function in L<MooseX::Validation::Doctypes>. It is a subclass of
+L<Moose::Meta::TypeConstraint> which adds a required C<doctype> parameter, and
+automatically generates a constraint and message which validate based on that
+doctype (as described in the MooseX::Validation::Doctypes docs).
+
+=cut
+
 extends 'Moose::Meta::TypeConstraint';
 
 class_type('Moose::Meta::TypeConstraint');
+
+=attr doctype
+
+The doctype to validate. Required.
+
+=cut
 
 has doctype => (
     is       => 'ro',
