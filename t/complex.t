@@ -166,25 +166,24 @@ doctype 'Location' => {
             }
         });
         is_deeply(
-            $errors,
+            $errors->errors,
             {
-                errors => {
-                    contact => {
-                        email => "invalid value \"anelson at cpan.org\" for 'contact.email'"
-                    },
-                    i18n => {
-                        available_currencies => "invalid value [ \"dolla dolla bill\", \"CAD\", \"EUR\" ] for 'i18n.available_currencies'",
-                        default_currency => "invalid value undef for 'i18n.default_currency'"
-                    },
-                    location => {
-                        coordinates => {
-                            lon => "invalid value \"38q\" for 'location.coordinates.lon'"
-                        }
+                contact => {
+                    email => "invalid value \"anelson at cpan.org\" for 'contact.email'"
+                },
+                i18n => {
+                    available_currencies => "invalid value [ \"dolla dolla bill\", \"CAD\", \"EUR\" ] for 'i18n.available_currencies'",
+                    default_currency => "invalid value undef for 'i18n.default_currency'"
+                },
+                location => {
+                    coordinates => {
+                        lon => "invalid value \"38q\" for 'location.coordinates.lon'"
                     }
                 }
             },
             "got the right errors"
         );
+        ok(!$errors->has_extra_data, "no extra data");
     }
 }
 

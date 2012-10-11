@@ -2,6 +2,8 @@ package MooseX::Validation::Doctypes::Errors;
 use Moose;
 # ABSTRACT: error class for MooseX::Validation::Doctypes
 
+use overload '""' => 'stringify';
+
 =head1 SYNOPSIS
 
   use MooseX::Validation::Doctypes;
@@ -111,6 +113,50 @@ sub TO_JSON {
         ($self->has_errors     ? (errors     => $self->errors)     : ()),
         ($self->has_extra_data ? (extra_data => $self->extra_data) : ()),
     };
+}
+
+sub stringify {
+    my $self = shift;
+
+    return join(
+        "\n",
+        (sort $self->_stringify_ref($self->errors)),
+        $self->_stringify_extra_data($self->extra_data),
+    );
+}
+
+sub _stringify_ref {
+    my $self = shift;
+    my ($data) = @_;
+
+    return
+        if !defined $data;
+
+    return $data
+        if !ref $data;
+
+    return map { $self->_stringify_ref($_) } values %$data
+        if ref($data) eq 'HASH';
+
+    return map { $self->_stringify_ref($_) } @$data
+        if ref($data) eq 'ARRAY';
+
+    return "unknown data: $data";
+}
+
+sub _stringify_extra_data {
+    my $self = shift;
+    my ($data) = @_;
+
+    return
+        unless defined $data;
+
+    require Data::Dumper;
+    local $Data::Dumper::Terse = 1;
+    my $string = Data::Dumper::Dumper($data);
+    chomp($string);
+
+    return ("extra data found:", $string);
 }
 
 __PACKAGE__->meta->make_immutable;
