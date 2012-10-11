@@ -1,6 +1,7 @@
 Revision history for MooseX-Validation-Doctypes
 
 {{$NEXT}}
+      - add TO_JSON and stringify overloading
 
 0.02  2012-10-10
       - improved docs (stevan)
