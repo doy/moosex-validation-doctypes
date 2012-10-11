@@ -106,6 +106,14 @@ has extra_data => (
     predicate => 'has_extra_data',
 );
 
+=method TO_JSON
+
+Returns a hashref with keys of C<errors> and C<extra_data>, containing the
+values of those attributes. This allows L<JSON> to properly encode the error
+object.
+
+=cut
+
 sub TO_JSON {
     my $self = shift;
 
@@ -114,6 +122,13 @@ sub TO_JSON {
         ($self->has_extra_data ? (extra_data => $self->extra_data) : ()),
     };
 }
+
+=method stringify
+
+Returns a human-readable string containing the error data in the object. This
+is used for the stringification overload.
+
+=cut
 
 sub stringify {
     my $self = shift;
