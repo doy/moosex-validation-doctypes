@@ -104,6 +104,15 @@ has extra_data => (
     predicate => 'has_extra_data',
 );
 
+sub TO_JSON {
+    my $self = shift;
+
+    return {
+        ($self->has_errors     ? (errors     => $self->errors)     : ()),
+        ($self->has_extra_data ? (extra_data => $self->extra_data) : ()),
+    };
+}
+
 __PACKAGE__->meta->make_immutable;
 no Moose;
 
