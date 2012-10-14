@@ -17,15 +17,17 @@ doctype 'Person' => {
     my $person = find_type_constraint('Person');
     my $errors = $person->validate({ foo => "bar" });
 
-    is(
+    like(
         "$errors",
-        "invalid value undef for 'id'\n"
-      . "invalid value undef for 'name'\n"
-      . "invalid value undef for 'title'\n"
-      . "extra data found:\n"
-      . "{\n"
-      . "  'foo' => 'bar'\n"
-      . "}",
+        qr[
+            invalid\ value\ undef\ for\ 'id'     \n
+            invalid\ value\ undef\ for\ 'name'   \n
+            invalid\ value\ undef\ for\ 'title'  \n
+            extra\ data\ found:                  \n
+            \s* {                            \s*
+              'foo' \s* => \s* 'bar'         \s*
+            \s* }
+        ]x,
         "stringified properly"
     );
 }
