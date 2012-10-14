@@ -1,6 +1,7 @@
 Revision history for MooseX-Validation-Doctypes
 
 {{$NEXT}}
+      - don't rely on exact formatting from Data::Dumper in a test
 
 0.03  2012-10-11
       - add TO_JSON and stringify overloading
