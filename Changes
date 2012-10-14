@@ -1,6 +1,8 @@
 Revision history for MooseX-Validation-Doctypes
 
 {{$NEXT}}
+
+0.04  2012-10-14
       - don't rely on exact formatting from Data::Dumper in a test
 
 0.03  2012-10-11
