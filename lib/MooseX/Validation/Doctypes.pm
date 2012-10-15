@@ -68,6 +68,8 @@ use Sub::Exporter -setup => {
 
 =head1 DESCRIPTION
 
+NOTE: The API for this module is still in flux as I try to decide on how it should work. You have been warned!
+
 This module allows you to declare L<Moose> type constraints to validate nested
 data structures as you may get back from a JSON web service or something along
 those lines. The doctype declaration can be any arbitrarily nested structure of
