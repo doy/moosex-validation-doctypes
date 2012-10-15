@@ -1,6 +1,8 @@
 Revision history for MooseX-Validation-Doctypes
 
 {{$NEXT}}
+
+0.05  2012-10-15
       - fix undef not failing validation against collections (and fix the error
         message that is given when it did fail)
       - allow nesting doctype declarations, so they can be built up in parts
