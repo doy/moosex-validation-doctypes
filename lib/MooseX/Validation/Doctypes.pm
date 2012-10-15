@@ -6,9 +6,9 @@ use warnings;
 use MooseX::Meta::TypeConstraint::Doctype;
 
 use Sub::Exporter -setup => {
-    exports => ['doctype'],
+    exports => ['doctype', 'maybe_doctype'],
     groups => {
-        default => ['doctype'],
+        default => ['doctype', 'maybe_doctype'],
     },
 };
 
@@ -99,6 +99,48 @@ sub doctype {
         ($name ? (name => $name) : ()),
         doctype            => $doctype,
         package_defined_in => scalar(caller),
+    };
+
+    my $tc = MooseX::Meta::TypeConstraint::Doctype->new($args);
+    Moose::Util::TypeConstraints::register_type_constraint($tc)
+        if $name;
+
+    return $tc;
+}
+
+=func maybe_doctype $name, $doctype
+
+Identical to C<doctype>, except that undefined values are also allowed. This is
+useful when nesting doctypes, as in:
+
+  doctype 'Person' => {
+      id      => 'Str',
+      name    => maybe_doctype({
+          first => 'Str',
+          last  => 'Str',
+      }),
+      address => 'Str',
+  };
+
+This way, C<< { first => 'Bob', last => 'Smith' } >> is a valid name, and it's
+also valid to not provide a name, but an invalid name will still throw an
+error.
+
+=cut
+
+sub maybe_doctype {
+    my $name;
+    $name = shift if @_ > 1;
+
+    my ($doctype) = @_;
+
+    # XXX validate name
+
+    my $args = {
+        ($name ? (name => $name) : ()),
+        doctype            => $doctype,
+        package_defined_in => scalar(caller),
+        maybe              => 1,
     };
 
     my $tc = MooseX::Meta::TypeConstraint::Doctype->new($args);

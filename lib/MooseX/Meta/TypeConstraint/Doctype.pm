@@ -84,6 +84,11 @@ has doctype => (
     required => 1,
 );
 
+has maybe => (
+    is  => 'ro',
+    isa => 'Bool',
+);
+
 has '+parent' => (
     default => sub { find_type_constraint('Ref') },
 );
@@ -116,7 +121,10 @@ sub _validate_doctype {
 
     match_on_type $doctype => (
         'HashRef' => sub {
-            if (!find_type_constraint('HashRef')->check($data)) {
+            if ($self->maybe && !defined($data)) {
+                # ignore it
+            }
+            elsif (!find_type_constraint('HashRef')->check($data)) {
                 $errors = $self->_format_error($data, $prefix);
             }
             else {
@@ -146,7 +154,10 @@ sub _validate_doctype {
             }
         },
         'ArrayRef' => sub {
-            if (!find_type_constraint('ArrayRef')->check($data)) {
+            if ($self->maybe && !defined($data)) {
+                # ignore it
+            }
+            elsif (!find_type_constraint('ArrayRef')->check($data)) {
                 $errors = $self->_format_error($data, $prefix);
             }
             else {
