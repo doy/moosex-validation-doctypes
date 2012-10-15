@@ -185,6 +185,33 @@ doctype 'Location' => {
         );
         ok(!$errors->has_extra_data, "no extra data");
     }
+
+    {
+        my $errors = $location->validate({
+            id       => '14931-FL-53',
+            name     => 'My House',
+            contact => {
+                phone   => '867-5309',
+                support => 'anelson@cpan.org',
+                web     => URI->new('https://metacpan.org/author/ANELSON'),
+                email   => 'anelson@cpan.org',
+            },
+            i18n => {
+                default_currency     => 'USD',
+                default_locale       => 'en',
+                available_currencies => [ 'CAD', 'EUR' ],
+                available_locales    => [ 'en' ]
+            }
+        });
+        is_deeply(
+            $errors->errors,
+            {
+                location => "invalid value undef for 'location'",
+            },
+            "got the right errors"
+        );
+        ok(!$errors->has_extra_data, "no extra data");
+    }
 }
 
 done_testing;

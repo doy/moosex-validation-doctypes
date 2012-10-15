@@ -117,7 +117,7 @@ sub _validate_doctype {
     match_on_type $doctype => (
         'HashRef' => sub {
             if (!find_type_constraint('HashRef')->check($data)) {
-                $errors = $data;
+                $errors = $self->_format_error($data, $prefix);
             }
             else {
                 for my $key (keys %$doctype) {
@@ -147,7 +147,7 @@ sub _validate_doctype {
         },
         'ArrayRef' => sub {
             if (!find_type_constraint('ArrayRef')->check($data)) {
-                $errors = $data;
+                $errors = $self->_format_error($data, $prefix);
             }
             else {
                 for my $i (0..$#$doctype) {
@@ -178,7 +178,7 @@ sub _validate_doctype {
             my $tc = Moose::Util::TypeConstraints::find_or_parse_type_constraint($doctype);
             die "Unknown type $doctype" unless $tc;
             if (!$tc->check($data)) {
-                $errors = "invalid value " . dump($data) . " for '$prefix'";
+                $errors = $self->_format_error($data, $prefix);
             }
         },
         => sub {
@@ -192,6 +192,13 @@ sub _validate_doctype {
         ($errors     ? (errors     => $errors)     : ()),
         ($extra_data ? (extra_data => $extra_data) : ()),
     );
+}
+
+sub _format_error {
+    my $self = shift;
+    my ($data, $prefix) = @_;
+
+    return "invalid value " . dump($data) . " for '$prefix'";
 }
 
 no Moose;
