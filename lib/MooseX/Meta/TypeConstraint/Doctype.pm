@@ -177,7 +177,14 @@ sub _validate_doctype {
         'Str|Moose::Meta::TypeConstraint' => sub {
             my $tc = Moose::Util::TypeConstraints::find_or_parse_type_constraint($doctype);
             die "Unknown type $doctype" unless $tc;
-            if (!$tc->check($data)) {
+            if ($tc->isa(__PACKAGE__)) {
+                my $sub_errors = $tc->_validate_doctype($data, undef, $prefix);
+                if ($sub_errors) {
+                    $errors = $sub_errors->errors;
+                    $extra_data = $sub_errors->extra_data;
+                }
+            }
+            elsif (!$tc->check($data)) {
                 $errors = $self->_format_error($data, $prefix);
             }
         },
